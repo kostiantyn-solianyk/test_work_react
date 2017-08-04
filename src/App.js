@@ -49,12 +49,12 @@ class App extends Component {
     });
   };
 
-  onRemoveRows = () => {
-    console.log('onRemoveColumns');
+  onRemoveRows = (matrixId, rowId) => {
+    console.log(rowId);
   };
 
-  onRemoveColumns = () => {
-    console.log('onRemoveColumns');
+  onRemoveColumns = (matrixId, TdId) => {
+    console.log(TdId);
   };
 
   render() {
@@ -65,8 +65,8 @@ class App extends Component {
         {matrixs.map((matrix, idx) =>
           <Matrix onAddRows={() => this.onAddRows(idx)}
                   onAddColumns={() => this.onAddColumns(idx)}
-                  onRemoveColumns={this.onRemoveColumns}
-                  onRemoveRows={this.onRemoveRows}
+                  onRemoveColumns={(columnId) => this.onRemoveColumns(idx, columnId)}
+                  onRemoveRows={(rowId) => this.onRemoveRows(idx, rowId)}
                   matrix={matrix}
                   key={idx}/>
         )}

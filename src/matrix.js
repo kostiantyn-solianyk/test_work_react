@@ -40,13 +40,10 @@ class LeftMinus extends Component {
 export default class Matrix extends Component {
   static propTypes = {
     matrix: PropTypes.object,
-    minuses: PropTypes.object,
     onAddColumns: PropTypes.func,
     onAddRows: PropTypes.func,
     onRemoveColumns: PropTypes.func,
     onRemoveRows: PropTypes.func,
-    onOver: PropTypes.func,
-    onOut: PropTypes.func
   };
 
   constructor(props) {
@@ -99,7 +96,15 @@ export default class Matrix extends Component {
     }
   };
 
+  getIds = (row, column) => {
+    this.setState({
+      removableRow: row,
+      removableColumn: column
+    });
+  };
+
   render() {
+    const { removableRow, removableColumn } = this.state;
     return (
       <div className="content"
            onMouseOver={this.onOver}
@@ -111,10 +116,10 @@ export default class Matrix extends Component {
           <i className="fa fa-plus"/>
         </div>
 
-        <TopMinus remove={this.props.onRemoveColumns}
+        <TopMinus remove={() => this.props.onRemoveColumns(removableColumn)}
                   left={this.state.minuses.left}
                   visibility={this.state.minuses.visibility}/>
-        <LeftMinus remove={this.props.onRemoveRows}
+        <LeftMinus remove={() => this.props.onRemoveRows(removableRow)}
                    top={this.state.minuses.top}
                    visibility={this.state.minuses.visibility}/>
 
@@ -122,7 +127,7 @@ export default class Matrix extends Component {
           <tbody>
           {this.props.matrix.rows.map((row, idx) =>
             <tr key={idx}>
-              {row.map((td, id) => <td className="content__table-td square" key={id}/>)}
+              {row.map((td, id) => <td className="content__table-td square" onMouseOver={() => this.getIds(idx, id)} key={id}/>)}
             </tr>
           )}
           </tbody>

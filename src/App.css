@@ -1,7 +1,7 @@
 .content {
   position: relative;
   display: inline-block;
-  margin-top: 60px;
+  margin: 60px;
 }
 
 .content__table {

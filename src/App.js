@@ -13,91 +13,60 @@ class App extends Component {
           [{}, {}, {}, {}],
           [{}, {}, {}, {}]
         ]
-      }],
-      minuses: {
-        left: 0,
-        top: 0,
-        visibility: 'hidden'
-      }
+      }]
     };
   }
 
-  onAddRows = () => {
-    const countColumns = this.state.matrixs[0].rows[0];
-    const currentState = this.state.matrixs[0].rows;
-    const arrNewRow = [];
+  onAddRows = (index) => {
+    const newMatrixs = this.state.matrixs.map((matrix, idx) => {
 
-    countColumns.map(() => {
-      arrNewRow.push({})
-    });
-
-    this.setState({
-      rows: currentState.push(arrNewRow)
-    });
-  };
-
-  onAddColumns = () => {
-    const currentState = this.state.matrixs[0].rows;
-
-    currentState.map((elementTr) => {
-      elementTr.push({})
-    });
-
-    this.setState({
-      rows: currentState
-    });
-  };
-
-  onOver = (event) => {
-    const target = event.target;
-
-    if (target.tagName === 'TD') {
-      clearTimeout(this.timerId);
-      this.setState({
-        minuses: {
-          left: target.offsetLeft,
-          top: target.offsetTop,
-          visibility: 'visible'
+      if (idx === index) {
+        return {
+          rows: [...matrix.rows, matrix.rows[0]]
         }
-      });
-    } else if (target.classList.value === 'fa fa-minus') {
-      clearTimeout(this.timerId)
-    }
+      }
+      return matrix;
+    });
+
+    this.setState({
+      matrixs: newMatrixs
+    });
   };
 
-  onOut = (event) => {
-    const target = event.target;
+  onAddColumns = (index) => {
+    const newMatrixs = this.state.matrixs.map((matrix, idx) => {
 
-    if (target.tagName === 'TD') {
-      this.timerId = setTimeout(() => {
-        this.setState({
-          minuses: {
-            visibility: 'hidden'
-          }
-        })
-      }, 300);
-    } else if (target.classList.value === 'fa fa-minus') {
-      this.timerId = setTimeout(() => {
-        this.setState({
-          minuses: {
-            visibility: 'hidden'
-          }
-        })
-      }, 300);
-    }
+      if (idx === index) {
+        return {
+          rows: matrix.rows.map(td => [...td, {}])
+        };
+      }
+      return matrix;
+    });
+
+    this.setState({
+      matrixs: newMatrixs
+    });
+  };
+
+  onRemoveRows = () => {
+    console.log('onRemoveColumns');
+  };
+
+  onRemoveColumns = () => {
+    console.log('onRemoveColumns');
   };
 
   render() {
-    const {matrixs, minuses} = this.state;
+    const {matrixs} = this.state;
 
     return (
       <div>
         {matrixs.map((matrix, idx) =>
-          <Matrix onAddRows={this.onAddRows}
-                  onAddColumns={this.onAddColumns}
-                  onOver={this.onOver}
-                  onOut={this.onOut}
-                  minuses={minuses}
+          <Matrix onAddRows={() => this.onAddRows(idx)}
+                  onAddColumns={() => this.onAddColumns(idx)}
+                  onRemoveColumns={this.onRemoveColumns}
+                  onRemoveRows={this.onRemoveRows}
                   matrix={matrix}
                   key={idx}/>
         )}

@@ -1,40 +1,10 @@
 import React, {Component, PropTypes} from 'react';
+import TopMinus from './topminus';
+import LeftMinus from './leftminus';
 import './App.css';
 
-class TopMinus extends Component {
-  static propTypes = {
-    left: PropTypes.number,
-    visibility: PropTypes.string,
-    remove: PropTypes.func
-  };
-
-  render() {
-    return (
-      <div className="content__minus-top square"
-           onClick={this.props.remove}
-           style={{left: this.props.left, visibility: this.props.visibility}}>
-        <i className="fa fa-minus"/>
-      </div>
-    )
-  }
-}
-
-class LeftMinus extends Component {
-  static propTypes = {
-    top: PropTypes.number,
-    visibility: PropTypes.string,
-    remove: PropTypes.func
-  };
-
-  render() {
-    return (
-      <div className="content__minus-left square"
-           onClick={this.props.remove}
-           style={{top: this.props.top, visibility: this.props.visibility}}>
-        <i className="fa fa-minus"/>
-      </div>
-    )
-  }
+function isNumber(item) {
+  return typeof item === 'number';
 }
 
 export default class Matrix extends Component {
@@ -55,6 +25,21 @@ export default class Matrix extends Component {
         visibility: 'hidden'
       }
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.matrix.rows.length <= this.state.removableRow) {
+      this.setState({
+        removableRow: false,
+        removableColumn: false
+      });
+    }
+    if (nextProps.matrix.rows[0].length <= this.state.removableColumn) {
+      this.setState({
+        removableRow: false,
+        removableColumn: false
+      });
+    }
   }
 
   onOver = (event) => {
@@ -104,7 +89,7 @@ export default class Matrix extends Component {
   };
 
   render() {
-    const { removableRow, removableColumn } = this.state;
+    const {removableRow, removableColumn} = this.state;
     return (
       <div className="content"
            onMouseOver={this.onOver}
@@ -116,18 +101,22 @@ export default class Matrix extends Component {
           <i className="fa fa-plus"/>
         </div>
 
+        {this.props.matrix.rows[0].length > 1 && isNumber(removableColumn) &&
         <TopMinus remove={() => this.props.onRemoveColumns(removableColumn)}
                   left={this.state.minuses.left}
                   visibility={this.state.minuses.visibility}/>
+        }
+        {this.props.matrix.rows.length > 1 && isNumber(removableRow) &&
         <LeftMinus remove={() => this.props.onRemoveRows(removableRow)}
                    top={this.state.minuses.top}
                    visibility={this.state.minuses.visibility}/>
-
+        }
         <table className="content__table">
           <tbody>
           {this.props.matrix.rows.map((row, idx) =>
             <tr key={idx}>
-              {row.map((td, id) => <td className="content__table-td square" onMouseOver={() => this.getIds(idx, id)} key={id}/>)}
+              {row.map((td, id) => <td className="content__table-td square" onMouseOver={() => this.getIds(idx, id)}
+                                       key={id}>{td.id}</td>)}
             </tr>
           )}
           </tbody>

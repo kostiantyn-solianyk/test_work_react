@@ -8,10 +8,10 @@ class App extends Component {
     this.state = {
       matrixs: [{
         rows: [
-          [{}, {}, {}, {}],
-          [{}, {}, {}, {}],
-          [{}, {}, {}, {}],
-          [{}, {}, {}, {}]
+          [{id: 1}, {}, {}, {}],
+          [{}, {id: 2}, {}, {}],
+          [{}, {}, { id: 3}, {}],
+          [{}, {}, {}, {id: 4}]
         ]
       }]
     };
@@ -50,11 +50,41 @@ class App extends Component {
   };
 
   onRemoveRows = (matrixId, rowId) => {
-    console.log(rowId);
+    const newMatrixs = this.state.matrixs.map((matrix, idx) => {
+
+      if (idx === matrixId) {
+        const newMatrixRows = [...matrix.rows];
+        newMatrixRows.splice(rowId, 1);
+        return {
+          rows: newMatrixRows
+        }
+      }
+      return matrix;
+    });
+
+    this.setState({
+      matrixs: newMatrixs
+    });
   };
 
   onRemoveColumns = (matrixId, TdId) => {
-    console.log(TdId);
+    const newMatrixs = this.state.matrixs.map((matrix, idx) => {
+
+      if (idx === matrixId) {
+        return {
+          rows: matrix.rows.map(tr => {
+            const newTR = [...tr];
+            newTR.splice(TdId, 1);
+            return newTR;
+          })
+        }
+      }
+      return matrix;
+    });
+
+    this.setState({
+      matrixs: newMatrixs
+    });
   };
 
   render() {
